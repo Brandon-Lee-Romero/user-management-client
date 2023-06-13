@@ -48,42 +48,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="user in users" :key="user.id">
-              <td><input type="checkbox" /></td>
-              <td>{{ user.username }}</td>
-              <td>{{ user.first_name + ' ' + user.last_name }}</td>
-              <td>{{ user.address }}</td>
-              <td>{{ user.postcode }}</td>
-              <td>{{ user.contact_number }}</td>
-              <td>{{ user.email }}</td>
-              <td>
-                <a href="#" class="btn btn-sm btn-outline-secondary">
-                  <i class="fas fa-edit"></i>
-                </a>
-
-                <a href="#" class="btn btn-sm btn-outline-danger">
-                  <i class="fas fa-times"></i>
-                </a>
-              </td>
-            </tr>
-            <!-- <tr>
-              <td><input type="checkbox" /></td>
-              <td>sample</td>
-              <td>sample</td>
-              <td>sample</td>
-              <td>sample</td>
-              <td>sample</td>
-              <td>sample</td>
-              <td>
-                <a href="#" class="btn btn-sm btn-outline-secondary">
-                  <i class="fas fa-edit"></i>
-                </a>
-
-                <a href="#" class="btn btn-sm btn-outline-danger">
-                  <i class="fas fa-times"></i>
-                </a>
-              </td>
-            </tr> -->
+            <User v-for="user in users" :user="user" :key="user.id"/>
           </tbody>
         </table>
       </div>
@@ -248,7 +213,7 @@
 <script setup>
 import { onMounted, ref  } from 'vue';
 import { allUsers }  from '../http/user-api';
-
+import User from '../components/user/User.vue';
 const users = ref([])
 
 const showModal = () => {
