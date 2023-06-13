@@ -6,11 +6,7 @@
       </div>
       <div class="card-body">
         <div class="row mb-3">
-          <div class="col-md-3">
-            <a href="#" class="btn btn-primary" @click="showModal">
-              <i class="fas fa-plus-circle"></i> Add New
-            </a>
-          </div>
+          <NewUser @added="handleAddedUser" :errors="errors" />
           <div class="col-md-9">
             <div class="form-inline justify-content-end">
               <div class="form-group">
@@ -48,7 +44,7 @@
             </tr>
           </thead>
           <tbody>
-            <User v-for="user in users" :user="user" :key="user.id"/>
+            <User v-for="user in users" :user="user" :key="user.id" />
           </tbody>
         </table>
       </div>
@@ -73,161 +69,44 @@
         </nav>
       </div>
     </div>
-
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="user-modal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-      ref="vuemodal"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal tittle</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label class="col-sm-3 col-form-label">Username</label>
-                <div class="col-sm-12">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="username"
-                  />
-                  <span class="invalid-feedback">Errors</span>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-3 col-form-label">First Name</label>
-                <div class="col-sm-12">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="first name"
-                  />
-                  <span class="invalid-feedback">Errors</span>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-3 col-form-label">Last Name</label>
-                <div class="col-sm-12">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="last name"
-                  />
-                  <span class="invalid-feedback">Errors</span>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-3 col-form-label">Address</label>
-                <div class="col-sm-12">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="address"
-                  />
-                  <span class="invalid-feedback">Errors</span>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-3 col-form-label">Post code</label>
-                <div class="col-sm-12">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="postal code"
-                  />
-                  <span class="invalid-feedback">Errors</span>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-3 col-form-label">Phone</label>
-                <div class="col-sm-12">
-                  <input type="text" class="form-control" placeholder="phone" />
-                  <span class="invalid-feedback">Errors</span>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-3 col-form-label">Email</label>
-                <div class="col-sm-12">
-                  <input type="text" class="form-control" placeholder="email" />
-                  <span class="invalid-feedback">Errors</span>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-3 col-form-label">Password</label>
-                <div class="col-sm-12">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="password"
-                  />
-                  <span class="invalid-feedback">Errors</span>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-6 col-form-label">Confirm password</label>
-                <div class="col-sm-12">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="confirm password"
-                  />
-                  <span class="invalid-feedback">Errors</span>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
-              Close
-            </button>
-            <button type="button" class="btn btn-primary">
-              Save or update
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref  } from 'vue';
-import { allUsers }  from '../http/user-api';
-import User from '../components/user/User.vue';
-const users = ref([])
+import { onMounted, ref } from "vue";
+import { allUsers, createUser, updateUser } from "../http/user-api";
+import User from "../components/user/User.vue";
+import NewUser from "../components/user/NewUser.vue";
+import Swal from "sweetalert2";
 
-const showModal = () => {
-  const modal = document.getElementById("user-modal");
-  const bootstrapModal = new bootstrap.Modal(modal);
-  bootstrapModal.show();
-};
+const users = ref([]);
+const errors = ref({});
 
 onMounted(async () => {
-   const {data}  = await allUsers()
-   users.value = data.data.data
+  const { data } = await allUsers();
+  users.value = data.data.data;
+});
 
-})
+const handleAddedUser = async (NewUser) => {
+  try {
+    const { data: createdUser } = await createUser(NewUser);
+    users.value.unshift(createdUser.data);
 
+    Swal.fire({
+      icon: "success",
+      title: "Success",
+      text: "User added successfully",
+    });
+    
+    closeModal();
 
+  } catch (error) {
+    if (error.response && error.response.data.errors) {
+      errors.value = error.response.data.errors;
+    } else {
+      errors.value = { message: "Server Error" };
+    }
+  }
+};
 </script>
 

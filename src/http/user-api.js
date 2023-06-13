@@ -4,12 +4,12 @@ const resource = "/users"
 
 export const allUsers = () => api.get(resource)
 
-export const readUsers = () => api.get(resource)
+export const readUser = () => api.get(resource)
 
-export const createUsers = user => api.post(resource, user)
+export const createUser = user => api.post(resource, user)
 
-export const updateUsers = (id, user) => api.put(`${resource}/${id}`, user)
+export const updateUser = (id, user) => api.put(`${resource}/${id}`, user)
 
-export const deleteUsers = id => api.delete(`${resource}/${id}`)
+export const deleteUser = id => api.delete(`${resource}/${id}`)
 
 export const bulkDeleteUsers = id => api.delete(`${resource}/bulk-destroy`, id)

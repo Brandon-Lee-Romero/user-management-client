@@ -16,6 +16,7 @@
 
 
 <script setup>
+import { ref } from 'vue';
 import DeleteIcon from '../icons/DeleteIcon.vue';
 import PencilIcon from '../icons/PencilIcon.vue';
 
@@ -23,5 +24,7 @@ import PencilIcon from '../icons/PencilIcon.vue';
 defineProps({
     user: Object
 })
+
+
 
 </script>
