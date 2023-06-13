@@ -37,9 +37,9 @@
         <table class="table table-striped table-hover">
           <thead>
             <tr>
+              <th><input type="checkbox" /></th>
               <th>Username</th>
-              <th>First Name</th>
-              <th>Last Name</th>
+              <th>Full Name</th>
               <th>Address</th>
               <th>Postcode</th>
               <th>Phone</th>
@@ -48,14 +48,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>johndoe</td>
-              <td>John</td>
-              <td>Doe</td>
-              <td>9626 Conroy Hills Brandimouth</td>
-              <td>2005</td>
-              <td>09123456789</td>
-              <td>johndoe@mail.com</td>
+            <tr v-for="user in users" :key="user.id">
+              <td><input type="checkbox" /></td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.first_name + ' ' + user.last_name }}</td>
+              <td>{{ user.address }}</td>
+              <td>{{ user.postcode }}</td>
+              <td>{{ user.contact_number }}</td>
+              <td>{{ user.email }}</td>
               <td>
                 <a href="#" class="btn btn-sm btn-outline-secondary">
                   <i class="fas fa-edit"></i>
@@ -66,6 +66,24 @@
                 </a>
               </td>
             </tr>
+            <!-- <tr>
+              <td><input type="checkbox" /></td>
+              <td>sample</td>
+              <td>sample</td>
+              <td>sample</td>
+              <td>sample</td>
+              <td>sample</td>
+              <td>sample</td>
+              <td>
+                <a href="#" class="btn btn-sm btn-outline-secondary">
+                  <i class="fas fa-edit"></i>
+                </a>
+
+                <a href="#" class="btn btn-sm btn-outline-danger">
+                  <i class="fas fa-times"></i>
+                </a>
+              </td>
+            </tr> -->
           </tbody>
         </table>
       </div>
@@ -119,63 +137,91 @@
               <div class="form-group">
                 <label class="col-sm-3 col-form-label">Username</label>
                 <div class="col-sm-12">
-                  <input type="text" class="form-control" placeholder="username"/>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="username"
+                  />
                   <span class="invalid-feedback">Errors</span>
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-3 col-form-label">First Name</label>
                 <div class="col-sm-12">
-                  <input type="text" class="form-control" placeholder="first name"/>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="first name"
+                  />
                   <span class="invalid-feedback">Errors</span>
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-3 col-form-label">Last Name</label>
                 <div class="col-sm-12">
-                  <input type="text" class="form-control" placeholder="last name"/>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="last name"
+                  />
                   <span class="invalid-feedback">Errors</span>
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-3 col-form-label">Address</label>
                 <div class="col-sm-12">
-                  <input type="text" class="form-control" placeholder="address"/>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="address"
+                  />
                   <span class="invalid-feedback">Errors</span>
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-3 col-form-label">Post code</label>
                 <div class="col-sm-12">
-                  <input type="text" class="form-control" placeholder="postal code"/>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="postal code"
+                  />
                   <span class="invalid-feedback">Errors</span>
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-3 col-form-label">Phone</label>
                 <div class="col-sm-12">
-                  <input type="text" class="form-control" placeholder="phone"/>
+                  <input type="text" class="form-control" placeholder="phone" />
                   <span class="invalid-feedback">Errors</span>
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-3 col-form-label">Email</label>
                 <div class="col-sm-12">
-                  <input type="text" class="form-control" placeholder="email"/>
+                  <input type="text" class="form-control" placeholder="email" />
                   <span class="invalid-feedback">Errors</span>
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-3 col-form-label">Password</label>
                 <div class="col-sm-12">
-                  <input type="text" class="form-control" placeholder="password"/>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="password"
+                  />
                   <span class="invalid-feedback">Errors</span>
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-6 col-form-label">Confirm password</label>
                 <div class="col-sm-12">
-                  <input type="text" class="form-control" placeholder="confirm password"/>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="confirm password"
+                  />
                   <span class="invalid-feedback">Errors</span>
                 </div>
               </div>
@@ -199,14 +245,24 @@
   </div>
 </template>
 
-<script>
-export default {
-  methods: {
-    showModal() {
-      const modal = document.getElementById("user-modal");
-      const bootstrapModal = new bootstrap.Modal(modal);
-      bootstrapModal.show();
-    },
-  },
+<script setup>
+import { onMounted, ref  } from 'vue';
+import { allUsers }  from '../http/user-api';
+
+const users = ref([])
+
+const showModal = () => {
+  const modal = document.getElementById("user-modal");
+  const bootstrapModal = new bootstrap.Modal(modal);
+  bootstrapModal.show();
 };
+
+onMounted(async () => {
+   const {data}  = await allUsers()
+   users.value = data.data.data
+
+})
+
+
 </script>
+
