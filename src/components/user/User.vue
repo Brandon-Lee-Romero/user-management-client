@@ -1,6 +1,6 @@
 <template>
   <tr>
-    <td><input type="checkbox"/> </td>
+    <td><input type="checkbox" /></td>
     <td>{{ user.username }}</td>
     <td>{{ user.first_name + " " + user.last_name }}</td>
     <td>{{ user.address }}</td>
@@ -122,22 +122,24 @@
                   />
                 </div>
               </div>
-              <!-- for password -->
-              <!-- <div class="form-group">
+              <div class="form-group">
                 <label class="col-sm-3 col-form-label">Password</label>
                 <div class="col-sm-12">
                   <input
+                    id="password-input"
                     type="text"
                     class="form-control"
                     placeholder="password"
                     :class="{ 'is-invalid': errors.password }"
+                    @input="checkPasswordLength"
                   />
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group" v-show="passwordLength !== 0">
                 <label class="col-sm-6 col-form-label">Confirm password</label>
                 <div class="col-sm-12">
                   <input
+                    id="password_confirmation-input"
                     type="text"
                     class="form-control"
                     placeholder="confirm password"
@@ -146,7 +148,7 @@
                     }"
                   />
                 </div>
-              </div> -->
+              </div>
               <div class="modal-footer">
                 <button
                   type="button"
@@ -171,12 +173,19 @@
 import DeleteIcon from "../icons/DeleteIcon.vue";
 import PencilIcon from "../icons/PencilIcon.vue";
 import { updateUser, deleteUser } from "../../http/user-api";
+import { ref } from "vue";
 import Swal from "sweetalert2";
 
 const props = defineProps({
   user: Object,
   errors: Object,
 });
+
+const passwordLength = ref(0);
+
+const checkPasswordLength = (event) => {
+  passwordLength.value = event.target.value.length;
+};
 
 const showModal = () => {
   const modal = document.getElementById("user-update-modal");
@@ -191,6 +200,7 @@ const showModal = () => {
     const addressInput = document.getElementById("address-input");
     const emailInput = document.getElementById("email-input");
     const phoneInput = document.getElementById("phone-input");
+
     userId.value = props.user.id;
     usernameInput.value = props.user.username;
     firstNameInput.value = props.user.first_name;
@@ -219,6 +229,13 @@ const UpdateUser = async () => {
       contact_number: document.getElementById("phone-input").value,
       email: document.getElementById("email-input").value,
     };
+
+    if (document.getElementById("password-input").value) {
+      details.password = document.getElementById("password-input").value;
+      details.password_confirmation = document.getElementById(
+        "password_confirmation-input"
+      ).value;
+    }
 
     const data = await updateUser(userId, details);
 
@@ -273,5 +290,7 @@ const removeUser = async () => {
   }
 };
 
-
+const showConfirmPassword = () => {
+  withPassword.value = true;
+};
 </script>
