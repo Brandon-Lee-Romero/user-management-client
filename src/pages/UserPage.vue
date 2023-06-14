@@ -44,7 +44,12 @@
             </tr>
           </thead>
           <tbody>
-            <User v-for="user in users" :user="user" :key="user.id" />
+            <User
+              v-for="user in users"
+              :user="user"
+              :key="user.id"
+              :errors="errors"
+            />
           </tbody>
         </table>
       </div>
@@ -96,10 +101,9 @@ const handleAddedUser = async (NewUser) => {
       icon: "success",
       title: "Success",
       text: "User added successfully",
+    }).then(() => {
+      location.reload();
     });
-    
-    closeModal();
-
   } catch (error) {
     if (error.response && error.response.data.errors) {
       errors.value = error.response.data.errors;

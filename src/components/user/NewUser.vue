@@ -187,8 +187,9 @@
 
 <script setup>
 import { reactive, ref } from "vue";
+import Swal from "sweetalert2";
 
-defineProps({
+const props = defineProps({
   user: Object,
   errors: Object,
 });
