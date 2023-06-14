@@ -1,6 +1,12 @@
 <template>
   <tr>
-    <td><input type="checkbox" /></td>
+    <td>
+      <input
+        type="checkbox"
+        :checked="selectedUsers.includes(user.id)"
+        @change="handleCheckboxChange(user.id)"
+      />
+    </td>
     <td>{{ user.username }}</td>
     <td>{{ user.first_name + " " + user.last_name }}</td>
     <td>{{ user.address }}</td>
@@ -127,7 +133,7 @@
                 <div class="col-sm-12">
                   <input
                     id="password-input"
-                    type="text"
+                    :type="showPassword ? 'text' : 'password'"
                     class="form-control"
                     placeholder="password"
                     :class="{ 'is-invalid': errors.password }"
@@ -140,13 +146,21 @@
                 <div class="col-sm-12">
                   <input
                     id="password_confirmation-input"
-                    type="text"
+                    :type="showPassword ? 'text' : 'password'"
                     class="form-control"
                     placeholder="confirm password"
                     :class="{
                       'is-invalid': errors.password_confirmation,
                     }"
                   />
+                  <div class="form-check form-switch py-3">
+                    <input
+                      type="checkbox"
+                      v-model="showPassword"
+                      class="form-check-input"
+                    />
+                    <span class="form-check-label">show password</span>
+                  </div>
                 </div>
               </div>
               <div class="modal-footer">
@@ -179,9 +193,15 @@ import Swal from "sweetalert2";
 const props = defineProps({
   user: Object,
   errors: Object,
+  selectedUsers: {
+    type: Array,
+    default: () => [],
+  },
 });
 
 const passwordLength = ref(0);
+const showPassword = ref(false);
+
 
 const checkPasswordLength = (event) => {
   passwordLength.value = event.target.value.length;
@@ -290,7 +310,13 @@ const removeUser = async () => {
   }
 };
 
-const showConfirmPassword = () => {
-  withPassword.value = true;
+const handleCheckboxChange = (userId) => {
+  if (props.selectedUsers.includes(userId)) {
+    props.selectedUsers.splice(props.selectedUsers.indexOf(userId), 1);
+  } else {
+    props.selectedUsers.push(userId);
+  }
+
+  console.log(props.selectedUsers);
 };
 </script>

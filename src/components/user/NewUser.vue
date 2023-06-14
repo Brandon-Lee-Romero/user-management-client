@@ -138,12 +138,13 @@
               <label class="col-sm-3 col-form-label">Password</label>
               <div class="col-sm-12">
                 <input
-                  type="text"
+                  :type="showPassword ? 'text' : 'password'"
                   class="form-control"
                   placeholder="password"
                   v-model="newUser.password"
                   :class="{ 'is-invalid': errors.password }"
                 />
+
                 <span class="invalid-feedback" v-if="errors.password">{{
                   formatError(errors.password)
                 }}</span>
@@ -153,12 +154,20 @@
               <label class="col-sm-6 col-form-label">Confirm password</label>
               <div class="col-sm-12">
                 <input
-                  type="text"
+                  :type="showPassword ? 'text' : 'password'"
                   class="form-control"
                   placeholder="confirm password"
                   v-model="newUser.password_confirmation"
                   :class="{ 'is-invalid': errors.password_confirmation }"
                 />
+                <div class="form-check form-switch py-3" >
+                  <input
+                    type="checkbox"
+                    v-model="showPassword"
+                    class="form-check-input"
+                  />
+                  <span class="form-check-label">show password</span>
+                </div>
                 <span
                   class="invalid-feedback"
                   v-if="errors.password_confirmation"
@@ -207,6 +216,7 @@ const newUser = reactive({
 });
 
 const emit = defineEmits(["added"]);
+const showPassword = ref(false);
 
 const showModal = () => {
   const modal = document.getElementById("user-modal");

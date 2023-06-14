@@ -6,12 +6,21 @@
       </div>
       <div class="card-body">
         <div class="row mb-3">
-          <NewUser @added="handleAddedUser" :errors="errors" />
+          <div class="col-sm-3" v-if="selectedUsers.length > 0">
+            <button class="btn btn-danger" @click="deleteUsers">
+              <i class="fas fa-minus-circle"></i> Delete
+            </button>
+          </div>
+          <NewUser
+            v-if="selectedUsers.length == 0"
+            @added="handleAddedUser"
+            :errors="errors"
+          />
           <div class="col-md-9">
             <div class="form-inline justify-content-end">
               <div class="form-group">
                 <!-- FOR SEARCH FUNCTION -->
-                <div class="input-group">
+                <!-- <div class="input-group">
                   <input
                     type="text"
                     class="form-control"
@@ -25,7 +34,7 @@
                       <i class="fas fa-search"></i>
                     </button>
                   </div>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -33,7 +42,16 @@
         <table class="table table-striped table-hover">
           <thead>
             <tr>
-              <th><input type="checkbox"/></th>
+              <th>
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    @change="handleAllCheckboxChange"
+                  />
+                </div>
+              </th>
               <th>Username</th>
               <th>Full Name</th>
               <th>Address</th>
@@ -49,6 +67,7 @@
               :user="user"
               :key="user.id"
               :errors="errors"
+              :selectedUsers="selectedUsers"
             />
           </tbody>
         </table>
@@ -79,13 +98,14 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { allUsers, createUser } from "../http/user-api";
+import { allUsers, bulkDeleteUsers, createUser } from "../http/user-api";
 import User from "../components/user/User.vue";
 import NewUser from "../components/user/NewUser.vue";
 import Swal from "sweetalert2";
 
 const users = ref([]);
 const errors = ref({});
+const selectedUsers = ref([]);
 
 onMounted(async () => {
   const { data } = await allUsers();
@@ -113,5 +133,49 @@ const handleAddedUser = async (NewUser) => {
   }
 };
 
-</script>
+const handleAllCheckboxChange = (event) => {
+  if (event.target.checked) {
+    // Filter out already selected users
+    const newSelectedUsers = users.value
+      .filter((user) => !selectedUsers.value.includes(user.id))
+      .map((user) => user.id);
+    selectedUsers.value = [...selectedUsers.value, ...newSelectedUsers];
+  } else {
+    selectedUsers.value = [];
+  }
+  console.log(selectedUsers.value, event.target.checked);
+};
 
+const deleteUsers = async () => {
+  try {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Users will be deleted permanently",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Delete",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const data = bulkDeleteUsers(selectedUsers.value);
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: data.message,
+        }).then(() => {
+          location.reload();
+        });
+      }
+    });
+  } catch (error) {
+    if (error.response && error.response.data.errors) {
+      Swal.fire({
+        icon: "error",
+        title: "error",
+        text: error.response.data.message,
+      });
+    }
+  }
+};
+</script>

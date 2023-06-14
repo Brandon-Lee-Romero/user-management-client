@@ -12,4 +12,4 @@ export const updateUser = (id, user) => api.put(`${resource}/${id}`, user)
 
 export const deleteUser = id => api.delete(`${resource}/${id}`)
 
-export const bulkDeleteUsers = id => api.delete(`${resource}/bulk-destroy`, id)
+export const bulkDeleteUsers = ids => api.delete(`${resource}/bulk-destroy`,  { data: { id: ids } })
