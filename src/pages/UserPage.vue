@@ -33,7 +33,7 @@
         <table class="table table-striped table-hover">
           <thead>
             <tr>
-              <th><input type="checkbox" /></th>
+              <th><input type="checkbox"/></th>
               <th>Username</th>
               <th>Full Name</th>
               <th>Address</th>
@@ -79,7 +79,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { allUsers, createUser, updateUser } from "../http/user-api";
+import { allUsers, createUser } from "../http/user-api";
 import User from "../components/user/User.vue";
 import NewUser from "../components/user/NewUser.vue";
 import Swal from "sweetalert2";
@@ -112,5 +112,6 @@ const handleAddedUser = async (NewUser) => {
     }
   }
 };
+
 </script>
 

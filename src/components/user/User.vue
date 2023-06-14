@@ -1,6 +1,6 @@
 <template>
   <tr>
-    <td><input type="checkbox" /></td>
+    <td><input type="checkbox"/> </td>
     <td>{{ user.username }}</td>
     <td>{{ user.first_name + " " + user.last_name }}</td>
     <td>{{ user.address }}</td>
@@ -9,7 +9,7 @@
     <td>{{ user.email }}</td>
     <td>
       <PencilIcon @click="showModal" />
-      <DeleteIcon />
+      <DeleteIcon @click="removeUser" />
     </td>
 
     <div
@@ -122,6 +122,7 @@
                   />
                 </div>
               </div>
+              <!-- for password -->
               <!-- <div class="form-group">
                 <label class="col-sm-3 col-form-label">Password</label>
                 <div class="col-sm-12">
@@ -169,7 +170,7 @@
 <script setup>
 import DeleteIcon from "../icons/DeleteIcon.vue";
 import PencilIcon from "../icons/PencilIcon.vue";
-import { updateUser } from "../../http/user-api";
+import { updateUser, deleteUser } from "../../http/user-api";
 import Swal from "sweetalert2";
 
 const props = defineProps({
@@ -228,7 +229,6 @@ const UpdateUser = async () => {
     }).then(() => {
       location.reload();
     });
-
   } catch (error) {
     if (error.response && error.response.data.errors) {
       Swal.fire({
@@ -239,5 +239,39 @@ const UpdateUser = async () => {
     }
   }
 };
+
+const removeUser = async () => {
+  try {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "User will be deleted permanently",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Delete",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const data = deleteUser(props.user.id);
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: data.message,
+        }).then(() => {
+          location.reload();
+        });
+      }
+    });
+  } catch (error) {
+    if (error.response && error.response.data.errors) {
+      Swal.fire({
+        icon: "error",
+        title: "error",
+        text: error.response.data.message,
+      });
+    }
+  }
+};
+
 
 </script>
