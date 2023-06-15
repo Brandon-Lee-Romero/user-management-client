@@ -14,6 +14,6 @@
                 <a href="#" class="nav-link px-2 text-muted">About</a>
             </li>
         </ul>
-        <p class="text-center text-muted">&copy; 2023 User Management</p>
+        <p class="text-center text-muted"><strong>Tech Exam</strong></p>
     </footer>
 </template>

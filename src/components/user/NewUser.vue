@@ -28,7 +28,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <form @submit="addNewUser" @keydown.enter="addNewUser">
+          <form @submit.prevent="addNewUser" @keydown.enter="addNewUser">
             <div class="form-group">
               <label class="col-sm-3 col-form-label">Username</label>
               <div class="col-sm-12">

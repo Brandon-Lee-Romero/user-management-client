@@ -4,7 +4,7 @@
         <div class="col-lg-6 mx-auto">
             <p class="lead mb-4">Rush Technologies</p>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <router-link :to="{ name : 'login'}" class="btn btn-outline-secondary btn-lg px-4">Authentication</router-link >
+                <router-link :to="{ name : 'login'}" class="btn btn-outline-secondary btn-lg px-4">Demo</router-link >
             </div>
         </div>
     </main>

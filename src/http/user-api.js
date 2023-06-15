@@ -1,6 +1,6 @@
 import api from "./api";
 
-const resource = "/users"
+const resource = "/api/users"
 
 export const allUsers = () => api.get(resource)
 

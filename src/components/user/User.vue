@@ -236,7 +236,8 @@ const showModal = () => {
   bootstrapModal.show();
 };
 
-const UpdateUser = async () => {
+const UpdateUser = async (event) => {
+  event.preventDefault();
   try {
     const userId = document.getElementById("user-id").value;
 
