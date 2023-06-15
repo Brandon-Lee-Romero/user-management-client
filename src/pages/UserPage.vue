@@ -73,7 +73,7 @@
         </table>
       </div>
       <!-- FOR PAGINATION FUNCTION -->
-      <div class="card-footer">
+      <!-- <div class="card-footer">
         <nav>
           <ul class="pagination justify-content-center">
             <li class="page-item">
@@ -91,7 +91,7 @@
             <li class="page-item"><a class="page-link">Last</a></li>
           </ul>
         </nav>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
